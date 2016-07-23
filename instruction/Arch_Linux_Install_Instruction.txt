@@ -132,6 +132,10 @@ Part 2) ZFS
 modprobe zfs
 zpool create -f zroot /dev/disk/by-id/[id-to-partition-part@]
 
+zfs set compression=on zroot
+zfs set atime=on zroot
+zfs set relatime=on zroot
+
 zfs create -o mountpoint=/home zroot/home
 zfs create -o mountpoint=/root zroot/root
 
@@ -158,7 +162,7 @@ Part Option) Check mount point
 
 Part 3) Install Arch
 mkdir /mnt/boot
-mount /dev/sda2 /mnt/boot
+mount /dev/sd@2 /mnt/boot
 cp /etc/zfs/zpool.cache /mnt/etc/zfs/zpool.cache
 zpool set cachefile=/etc/zfs/zpool.cache zroot
 pacstrap -i /mnt base base-devel
@@ -192,7 +196,7 @@ pacman -S zfs-linux
 
 Part 6 ) Bootloader
 pacman -S grub-bios
-grub-install /dev/sda
+grub-install /dev/sd@
 mkinitcpio -p linux
 ------------------------------------------
 vi /boot/grub/grub.cfg
