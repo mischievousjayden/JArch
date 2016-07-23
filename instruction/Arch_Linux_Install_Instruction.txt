@@ -75,7 +75,7 @@ echo "myid ALL=(ALL) ALL" >> /etc/sudoers # Add sudo
 
 
 ================================================================================
-                              [ Archiso with ZFS]
+                              [ Archiso with ZFS ]
 ================================================================================
 
 Part 1) Download archiso
@@ -147,7 +147,7 @@ zpool import -d /dev/by-id -R /mnt zroot
 -d is not the actual device id, but the /dev/by-id directory containing the symbolic links.
 If this command fails and you are asked to import your pool via its numeric ID,
 run zpool import to find out the ID of your pool then use a command
-such as: zpool import 9876543212345678910 -R /mnt zrootmount
+such as: zpool import 9876543212345678910 -R /mnt zroot
 
 
 Part Option) Check mount point
