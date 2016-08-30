@@ -73,6 +73,18 @@ passwd myid # change password
 echo "myid ALL=(ALL) ALL" >> /etc/sudoers # Add sudo
 
 
+Part Option) Install Yaourt
+< https://archlinux.fr/yaourt-en >
+git clone https://aur.archlinux.org/package-query.git
+cd package-query
+makepkg -si
+cd ..
+git clone https://aur.archlinux.org/yaourt.git
+cd yaourt
+makepkg -si
+cd ..
+
+
 Part Option) Install Gnome
 pacman -Syy xorg
 pacman -Syy xterm xorg-xclock xorg-twm xorg-xinit xorg-server-utils
