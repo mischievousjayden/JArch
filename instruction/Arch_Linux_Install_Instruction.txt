@@ -30,17 +30,20 @@ Part 3) Config
 genfstab -U -p /mnt >> /mnt/etc/fstab
 arch-chroot /mnt /bin/bash
 passwd
-
+------------------------------------------
 vi /etc/locale.gen
-    unblock 'en_US.UTF-8 UTF-8' and 'en_US ISO-8858-1'
+    unblock "en_US.UTF-8 UTF-8"
+------------------------------------------
 locale-gen
 export LANG=en_US.UTF-8
 ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
 hwclock --systohc --utc
 
 echo '[machine name]' > /etc/hostname
+------------------------------------------
 vi /etc/hosts
-    add '[machine name]' to end of lines
+    add "[machine name]" to end of lines
+------------------------------------------
 
 ip link
 -----------------------------------------------------------
@@ -48,7 +51,7 @@ ip link
 systemctl enable dhcpcd@[name].service
 -----------------------------------------------------------
 # wifi connection
-pacman -Syyu
+pacman -Syu
 pacman -S iw wpa_supplicant
 pacman -S dialog
 pacman -S wpa_actiond
@@ -66,44 +69,13 @@ exit
 reboot
 
 
-Part Option) Create group and user
-groupadd mygroup # create group 'mygroup'
-useradd -m -s /bin/bash -g mygroup myid # create user 'myid' in group 'mygroup', default shell is bash
-passwd myid # change password
-echo "myid ALL=(ALL) ALL" >> /etc/sudoers # Add sudo
-
-
-Part Option) Install Yaourt
-< https://archlinux.fr/yaourt-en >
-git clone https://aur.archlinux.org/package-query.git
-cd package-query
-makepkg -si
-cd ..
-git clone https://aur.archlinux.org/yaourt.git
-cd yaourt
-makepkg -si
-cd ..
-
-
-Part Option) Install Gnome
-pacman -Syy xorg
-pacman -Syy xterm xorg-xclock xorg-twm xorg-xinit xorg-server-utils
-pacman -Syy gnome gnome-extra gnome-tweak-tool
-systemctl enable gdm
-localectl set-locale LANG="en_US.UTF-8"
-------------------------------------------
-vi /etc/gdm/custom.conf
-    unblock WaylandEnable=false
-------------------------------------------
-
-
 
 ================================================================================
                               [ Archiso with ZFS ]
 ================================================================================
 
 Part 1) Download archiso
-pacman -S archiso
+pacman -Syu archiso
 mkdir archiso-zfs
 cp -r /usr/share/archiso/configs/releng/* ./archiso-zfs
 cd archiso-zfs
@@ -144,8 +116,12 @@ mkfs.ext4 /dev/sd@2
 
 
 Part Option) Install ZFS
-echo '[archzfs]' >> /etc/pacman.conf
-echo 'Server = http://archzfs.com/$repo/x86_64' >> /etc/pacman.conf
+------------------------------------------
+vi /etc/pacman.conf
+    add
+        '[archzfs]' >> /etc/pacman.conf
+        'Server = http://archzfs.com/$repo/x86_64' >> /etc/pacman.conf
+------------------------------------------
 pacman-key -r 5E1ABF240EE7A126
 pacman-key --lsign-key 5E1ABF240EE7A126
 pacman -Syyu
@@ -210,8 +186,12 @@ arch-chroot /mnt /bin/bash
 
 
 Part 5) Install ZFS
-echo '[archzfs]' >> /etc/pacman.conf
-echo 'Server = http://archzfs.com/$repo/x86_64' >> /etc/pacman.conf
+------------------------------------------
+vi /etc/pacman.conf
+    add
+        '[archzfs]' >> /etc/pacman.conf
+        'Server = http://archzfs.com/$repo/x86_64' >> /etc/pacman.conf
+------------------------------------------
 pacman-key -r 5E1ABF240EE7A126
 pacman-key --lsign-key 5E1ABF240EE7A126
 pacman -Syyu

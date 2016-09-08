@@ -1,0 +1,55 @@
+Tip) Create group and user
+groupadd mygroup # create group 'mygroup'
+useradd -m -s /bin/bash -g mygroup myid # create user 'myid' in group 'mygroup', default shell is bash
+passwd myid # change password
+------------------------------------------
+visudo
+    add "myid ALL=(ALL) ALL"
+------------------------------------------
+
+
+Tip) Install Yaourt
+< https://archlinux.fr/yaourt-en >
+git clone https://aur.archlinux.org/package-query.git
+cd package-query
+makepkg -si
+cd ..
+git clone https://aur.archlinux.org/yaourt.git
+cd yaourt
+makepkg -si
+cd ..
+
+
+Tip) Install Gnome
+pacman -Syu xorg
+pacman -S xterm xorg-xclock xorg-twm xorg-xinit xorg-server-utils
+pacman -S gnome gnome-extra gnome-tweak-tool
+systemctl enable gdm
+localectl set-locale LANG="en_US.UTF-8"
+------------------------------------------
+vi /etc/gdm/custom.conf
+    unblock "WaylandEnable=false"
+------------------------------------------
+
+
+Tip) Korean
+pacman -S ibus ibus-hangul adobe-source-han-sans-kr-fonts
+ibus-setup
+
+
+Tip) VMWare Tools
+pacman -Syy net-tools gtkmm
+sudo pacman -Syy open-vm-tools
+
+
+Tip) Install OpenSSH
+pacman -Syyu openssh
+systemctl start sshd.service # 'systemctl stop sshd.service' when want to stop
+systemctl enable sshd.service # automatically start at the boot time
+
+
+Tip) disable suspend on lid close
+vim /etc/systemd/logind.conf
+    HandleLidSwitch=ignore
+systemctl restart systemd-logind
+
