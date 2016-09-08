@@ -39,7 +39,7 @@ ibus-setup
 
 Tip) VMWare Tools
 pacman -Syy net-tools gtkmm
-sudo pacman -Syy open-vm-tools
+pacman -Syy open-vm-tools
 
 
 Tip) Install OpenSSH
