@@ -33,17 +33,17 @@ vi /etc/gdm/custom.conf
 
 
 Tip) Korean
-pacman -S ibus ibus-hangul adobe-source-han-sans-kr-fonts
+pacman -Sy ibus ibus-hangul adobe-source-han-sans-kr-fonts
 ibus-setup
 
 
 Tip) VMWare Tools
-pacman -Syy net-tools gtkmm
-pacman -Syy open-vm-tools
+pacman -Syu net-tools gtkmm
+pacman -S open-vm-tools
 
 
 Tip) Install OpenSSH
-pacman -Syyu openssh
+pacman -Syu openssh
 systemctl start sshd.service # 'systemctl stop sshd.service' when want to stop
 systemctl enable sshd.service # automatically start at the boot time
 
