@@ -1,0 +1,112 @@
+< Useful commend line >
+zpool list
+zpool get all [zpool name]
+zfs list
+zfs list -t snapshot
+zfs set compression=[compression type] [zpool name] # on, off, lzjb, gzip, ...
+zfs create [zpool name]/[zfs name]
+zfs destroy [zpool name]/[zfs name]
+zfs snapshot [zpool name]/[zfs name]@[snapshot name]
+zfs clone [zpool name]/[zfs name]@[snapshot name] [zpool name]/[zfs name]
+zfs send [zpool name]/[zfs name]
+zfs recv [zpool name]/[zfs name] # zfs receive [zpool name]/[zfs name]
+
+
+< Example >
+zpool list
+zfs list
+
+##################################################
+# set compression
+zpool get all zroot
+zfs set compression=lzjb zroot
+zpool get all zroot
+
+
+##################################################
+# create zfs
+zfs list
+zfs create zroot/zfs_tutorial1
+zfs list
+
+
+##################################################
+# take snapshot
+zfs list -t snapshot
+cd /zfs_tutorial1 && echo "before snapshot" >> temp_file
+zfs snapshot zroot/zfs_tutorial1@snapshot1
+zfs list -t snapshot
+
+
+##################################################
+# zfs clone
+zfs list
+zfs list -t snapshot
+zfs clone zroot/zfs_tutorial1@snapshot1 zroot/zfs_tutorial_clone
+zfs list
+zfs list -t snapshot
+
+
+##################################################
+# rollback
+cat /zfs_tutorial1/temp_file
+zfs list -t snapshot
+cd /zfs_tutorial1 && echo "after snapshot" >> temp_file
+cat /zfs_tutorial1/temp_file
+zfs list -t snapshot
+zfs rollback zroot/zfs_tutorial1@snapshot1
+cat /zfs_tutorial1/temp_file
+zfs list -t snapshot
+
+
+##################################################
+# send snapshot
+zfs list
+zfs list -t snapshot
+zfs send zroot/zfs_tutorial1@snapshot1 | zfs recv zroot/zfs_tutorial2
+zfs list
+zfs list -t snapshot
+
+
+##################################################
+# send incremental data
+cat /zfs_tutorial1/temp_file
+cat /zfs_tutorial2/temp_file
+zfs list -t snapshot
+cd /zfs_tutorial1 && echo "after snapshot" >> temp_file
+cat /zfs_tutorial1/temp_file
+cat /zfs_tutorial2/temp_file
+zfs snapshot zroot/zfs_tutorial1@snapshot2
+zfs list -t snapshot
+zfs send -i zroot/zfs_tutorial1@snapshot1 zroot/zfs_tutorial1@snapshot2 | zfs recv zroot/zfs_tutorial2
+# zfs send -i snapshot1 zroot/zfs_tutorial1@snapshot2 | zfs recv zroot/zfs_tutorial2
+cat /zfs_tutorial1/temp_file
+cat /zfs_tutorial2/temp_file
+zfs list -t snapshot
+
+
+##################################################
+# send to ssh
+zfs send zroot/zfs_tutorial1@snapshot2 | ssh [host] zfs recv zroot/zfs_tutorial
+
+
+##################################################
+# send to file
+zfs send zroot/zfs_tutorial1@snapshot2 > snapshot2_backup
+zfs send zroot/zfs_tutorial1@snapshot2 | gzip > snapshot2_backup.gz
+zfs list -t snapshot
+zfs receive zroot/zfs_tutorial < snapshot2_backup
+# snapshot2_backup > zfs receive zroot/zfs_tutorial
+zfs list -t snapshot
+zfs rename zroot/zfs_tutorial zroot/zfs_tutorial3
+zfs list -t snapshot
+
+
+# destroy zfs
+zfs list
+zfs destroy zroot/zfs_tutorial1
+zfs destroy -r zroot/zfs_tutorial2
+zfs destroy -r zroot/zfs_tutorial3
+zfs destroy -r zroot/zfs_tutorial_clone
+zfs list
+
