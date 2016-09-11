@@ -102,6 +102,7 @@ zfs rename zroot/zfs_tutorial zroot/zfs_tutorial3
 zfs list -t snapshot
 
 
+##################################################
 # destroy zfs
 zfs list
 zfs destroy zroot/zfs_tutorial1
