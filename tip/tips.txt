@@ -46,6 +46,11 @@ Tip) Install OpenSSH
 pacman -Syu openssh
 systemctl start sshd.service # 'systemctl stop sshd.service' when want to stop
 systemctl enable sshd.service # automatically start at the boot time
+------------------------------------------
+# when need to log in with root
+vi /etc/ssh/sshd_config
+    add 'PermitRootLogin yes'
+------------------------------------------
 
 
 Tip) disable suspend on lid close

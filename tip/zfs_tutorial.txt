@@ -105,9 +105,9 @@ zfs list -t snapshot
 ##################################################
 # destroy zfs
 zfs list
-zfs destroy zroot/zfs_tutorial1
+zfs destroy -r zroot/zfs_tutorial_clone
+zfs destroy -r zroot/zfs_tutorial1
 zfs destroy -r zroot/zfs_tutorial2
 zfs destroy -r zroot/zfs_tutorial3
-zfs destroy -r zroot/zfs_tutorial_clone
 zfs list
 
