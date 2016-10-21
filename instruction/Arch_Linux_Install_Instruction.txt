@@ -83,10 +83,18 @@ cd archiso-zfs
 
 Part 2) Customize
 ------   ZFS   ------
-echo '[archzfs]' >> pacman.conf
-echo 'SigLevel = Optional TrustAll' >> pacman.conf
-echo 'Server = http://archzfs.com/$repo/x86_64' >> pacman.conf
-echo 'archzfs-linux' >> packages.x86_64
+------------------------------------------
+vi pacman.conf
+# add following end of file
+    [archzfs]
+    SigLevel = Optional TrustAll
+    Server = http://archzfs.com/$repo/x86_64
+------------------------------------------
+------------------------------------------
+vi packages.x86_64
+# add following end of file
+    archzfs-linux
+------------------------------------------
 
 
 Part 3) Create ISO
@@ -118,9 +126,9 @@ mkfs.ext4 /dev/sd@2
 Part Option) Install ZFS
 ------------------------------------------
 vi /etc/pacman.conf
-    add
-        '[archzfs]' >> /etc/pacman.conf
-        'Server = http://archzfs.com/$repo/x86_64' >> /etc/pacman.conf
+# add following end of file
+    [archzfs]
+    Server = http://archzfs.com/$repo/x86_64
 ------------------------------------------
 pacman-key -r 5E1ABF240EE7A126
 pacman-key --lsign-key 5E1ABF240EE7A126
@@ -188,9 +196,9 @@ arch-chroot /mnt /bin/bash
 Part 5) Install ZFS
 ------------------------------------------
 vi /etc/pacman.conf
-    add
-        '[archzfs]' >> /etc/pacman.conf
-        'Server = http://archzfs.com/$repo/x86_64' >> /etc/pacman.conf
+# add following end of file
+    [archzfs]
+    Server = http://archzfs.com/$repo/x86_64
 ------------------------------------------
 pacman-key -r 5E1ABF240EE7A126
 pacman-key --lsign-key 5E1ABF240EE7A126

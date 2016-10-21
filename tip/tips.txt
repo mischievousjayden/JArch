@@ -42,6 +42,19 @@ pacman -Syu net-tools gtkmm
 pacman -S open-vm-tools
 
 
+Tip) VMWare Tools with Host Shared Folder
+# print out list of shared folder
+vmware-hgfsclient
+
+# mount host shared folder
+vmhgfs-fuse -o allow_other -o auto_unmount .host:/<host shared folder> <mound destination>
+
+# if get error
+vim /etc/fuse.conf
+# add following end of file
+    user_allow_other
+
+
 Tip) Install OpenSSH
 pacman -Syu openssh
 systemctl start sshd.service # 'systemctl stop sshd.service' when want to stop
