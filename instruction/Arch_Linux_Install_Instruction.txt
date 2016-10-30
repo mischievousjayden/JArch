@@ -117,10 +117,14 @@ wipefs --all /dev/[sd@]
 gdisk /dev/sd@
 Number   Size   Code   Name
 1        2M     ef02   Bios boot partition
-2        512M   8300   Linux filesystem      # /boot
-3               bf00   Solaris root          # zroot
+2        [??]   8200   Linux swap
+3        512M   8300   Linux filesystem      # /boot
+4        [??]   bf00   Solaris root          # zroot
 
-mkfs.ext4 /dev/sd@2
+lsblk /dev/sd@
+mkswap /dev/sd@2
+swapon /dev/sd@2
+mkfs.ext4 /dev/sd@3
 
 
 Part Option) Install ZFS
@@ -170,7 +174,7 @@ Part Option) Check mount point
 
 Part 3) Install Arch
 mkdir /mnt/boot
-mount /dev/sd@2 /mnt/boot
+mount /dev/sd@3 /mnt/boot
 cp /etc/zfs/zpool.cache /mnt/etc/zfs/zpool.cache
 zpool set cachefile=/etc/zfs/zpool.cache zroot
 pacstrap -i /mnt base base-devel
