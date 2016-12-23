@@ -51,10 +51,8 @@ ip link
 systemctl enable dhcpcd@[name].service
 -----------------------------------------------------------
 # wifi connection
-pacman -Syu
-pacman -S iw wpa_supplicant
-pacman -S dialog
-pacman -S wpa_actiond
+pacman -Syyu
+pacman -S iw wpa_supplicant dialog wpa_actiond
 systemctl enable netctl-auto@[name].service
 -----------------------------------------------------------
 
@@ -65,6 +63,7 @@ pacman -S grub-bios
 grub-install /dev/sd@
 mkinitcpio -p linux
 grub-mkconfig -o /boot/grub/grub.cfg
+
 exit
 reboot
 
@@ -112,6 +111,23 @@ dd if=[iso] of=/dev/sd@ bs=4M status=progress && sync
                               [ Arch on ZFS ]
 ================================================================================
 
+< Install ZFS >
+(1) from git
+curl https://raw.githubusercontent.com/mischievousjayden/JArch/master/instruction/script/zfs_install.sh | sh
+
+(2) from scratch
+------------------------------------------
+vi /etc/pacman.conf
+# add following end of file
+    [archzfs]
+    Server = http://archzfs.com/$repo/x86_64
+------------------------------------------
+pacman-key -r 5E1ABF240EE7A126
+pacman-key --lsign-key 5E1ABF240EE7A126
+pacman -Syy
+pacman -S zfs-linux
+
+
 Part 1) Partition
 wipefs --all /dev/[sd@]
 gdisk /dev/sd@
@@ -128,16 +144,7 @@ mkfs.ext4 /dev/sd@3
 
 
 Part Option) Install ZFS
-------------------------------------------
-vi /etc/pacman.conf
-# add following end of file
-    [archzfs]
-    Server = http://archzfs.com/$repo/x86_64
-------------------------------------------
-pacman-key -r 5E1ABF240EE7A126
-pacman-key --lsign-key 5E1ABF240EE7A126
-pacman -Syyu
-pacman -S zfs-linux
+Follow "< Install ZFS >"
 
 
 Part 2) ZFS
@@ -150,6 +157,7 @@ zfs set relatime=on zroot
 
 zfs create -o mountpoint=/home zroot/home
 zfs create -o mountpoint=/root zroot/root
+zfs list
 
 zfs set mountpoint=/ zroot
 zfs set mountpoint=/home zroot/home
@@ -169,7 +177,7 @@ such as: zpool import 9876543212345678910 -R /mnt zroot
 Part Option) Check mount point
 1. mount
 2. df -h
-3. zfs list
+3. zfs mount
 
 
 Part 3) Install Arch
@@ -198,22 +206,18 @@ arch-chroot /mnt /bin/bash
 
 
 Part 5) Install ZFS
-------------------------------------------
-vi /etc/pacman.conf
-# add following end of file
-    [archzfs]
-    Server = http://archzfs.com/$repo/x86_64
-------------------------------------------
-pacman-key -r 5E1ABF240EE7A126
-pacman-key --lsign-key 5E1ABF240EE7A126
-pacman -Syyu
-pacman -S zfs-linux
+Follow "< Install ZFS >"
 
 
 Part 6 ) Bootloader
 pacman -S grub-bios
 grub-install /dev/sd@
 mkinitcpio -p linux
+
+(1) from git
+curl https://raw.githubusercontent.com/mischievousjayden/JArch/master/instruction/script/zfs_grub_config.sh | sh
+
+(2) from scratch
 ------------------------------------------
 vi /boot/grub/grub.cfg
 set timeout=2
@@ -225,6 +229,7 @@ menuentry "Arch Linux" {
     initrd /initramfs-linux.img
 }
 ------------------------------------------
+
 exit
 umount /mnt/boot
 zfs umount -a

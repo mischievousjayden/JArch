@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 echo "----- START TO INSTALL ZFS -----"
 echo "----- add repository to pacman.conf -----"
@@ -13,6 +13,6 @@ pacman-key -r 5E1ABF240EE7A126
 pacman-key --lsign-key 5E1ABF240EE7A126
 
 echo "----- install zfs -----"
-pacman -Syyu
+pacman -Syy
 pacman -S zfs-linux
 
