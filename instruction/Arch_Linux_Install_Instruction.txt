@@ -22,7 +22,7 @@ Part 2) Install Arch
 mount /dev/sd@4 /mnt
 mkdir -p /mnt/boot
 mount /dev/sd@3 /mnt/boot
-pacman -Syyu
+pacman -Syy
 pacstrap -i /mnt base base-devel
 
 
