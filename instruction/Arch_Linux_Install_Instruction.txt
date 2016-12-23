@@ -58,7 +58,11 @@ systemctl enable netctl-auto@[name].service
 
 
 Part 4) Bootloader
-pacman -Syyu
+(1) from git
+curl https://raw.githubusercontent.com/mischievousjayden/JArch/master/instruction/script/grub_install.sh | sh /dev/stdin /dev/sd@
+
+(2) from scratch
+pacman -Syy
 pacman -S grub-bios
 grub-install /dev/sd@
 mkinitcpio -p linux
@@ -210,14 +214,15 @@ Follow "< Install ZFS >"
 
 
 Part 6 ) Bootloader
-pacman -S grub-bios
-grub-install /dev/sd@
-mkinitcpio -p linux
-
 (1) from git
+curl https://raw.githubusercontent.com/mischievousjayden/JArch/master/instruction/script/grub_install.sh | sh /dev/stdin /dev/sd@
+
 curl https://raw.githubusercontent.com/mischievousjayden/JArch/master/instruction/script/zfs_grub_config.sh | sh
 
 (2) from scratch
+pacman -S grub-bios
+grub-install /dev/sd@
+mkinitcpio -p linux
 ------------------------------------------
 vi /boot/grub/grub.cfg
 set timeout=2

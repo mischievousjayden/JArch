@@ -1,8 +1,7 @@
 #!/bin/sh
 
 echo "----- CREATE GRUB CONFIG -----"
-GRUB_CNF=./grub.cfg
-# GRUB_CNF=/boot/grub/grub.cfg
+GRUB_CNF=/boot/grub/grub.cfg
 echo "set timeout=2" > $GRUB_CNF
 echo "set default=0" >> $GRUB_CNF
 echo "" >> $GRUB_CNF

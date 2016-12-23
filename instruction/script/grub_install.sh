@@ -11,4 +11,5 @@ pacman -S grub-bios
 
 grub-install $1
 mkinitcpio -p linux
+grub-mkconfig -o /boot/grub/grub.cfg
 
