@@ -30,6 +30,11 @@ Part 3) Config
 genfstab -U -p /mnt >> /mnt/etc/fstab
 arch-chroot /mnt /bin/bash
 passwd
+
+(1) from git
+curl https://raw.githubusercontent.com/mischievousjayden/JArch/master/instruction/script/arch_config.sh | sh /dev/stdin 'machinename'
+
+(2) from scratch
 ------------------------------------------
 vi /etc/locale.gen
     unblock "en_US.UTF-8 UTF-8"
@@ -131,6 +136,15 @@ pacman-key --lsign-key 5E1ABF240EE7A126
 pacman -Syy
 pacman -S zfs-linux
 
+Tip) Check mount point
+1. mount
+2. df -h
+3. zfs mount
+
+Tip) Check zfs
+zpool list
+zfs lsit
+
 
 Part 1) Partition
 wipefs --all /dev/[sd@]
@@ -161,7 +175,6 @@ zfs set relatime=on zroot
 
 zfs create -o mountpoint=/home zroot/home
 zfs create -o mountpoint=/root zroot/root
-zfs list
 
 zfs set mountpoint=/ zroot
 zfs set mountpoint=/home zroot/home
@@ -178,14 +191,8 @@ run zpool import to find out the ID of your pool then use a command
 such as: zpool import 9876543212345678910 -R /mnt zroot
 
 
-Part Option) Check mount point
-1. mount
-2. df -h
-3. zfs mount
-
-
 Part 3) Install Arch
-mkdir /mnt/boot
+mkdir /mnt/boot /mnt/etc /mnt/etc/zfs
 mount /dev/sd@3 /mnt/boot
 cp /etc/zfs/zpool.cache /mnt/etc/zfs/zpool.cache
 zpool set cachefile=/etc/zfs/zpool.cache zroot
@@ -213,11 +220,9 @@ Part 5) Install ZFS
 Follow "< Install ZFS >"
 
 
-Part 6 ) Bootloader
+Part 6) Bootloader
 (1) from git
-curl https://raw.githubusercontent.com/mischievousjayden/JArch/master/instruction/script/grub_install.sh | sh /dev/stdin /dev/sd@
-
-curl https://raw.githubusercontent.com/mischievousjayden/JArch/master/instruction/script/zfs_grub_config.sh | sh
+curl https://raw.githubusercontent.com/mischievousjayden/JArch/master/instruction/script/zfs_grub_install.sh | sh /dev/stdin /dev/sd@
 
 (2) from scratch
 pacman -S grub-bios

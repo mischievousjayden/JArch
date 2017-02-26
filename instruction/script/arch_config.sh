@@ -15,4 +15,5 @@ hwclock --systohc --utc
 
 echo "----- machine name -----"
 echo $1 > /etc/hostname
+echo "add '$1' to end of lines on /etc/hosts"
 
