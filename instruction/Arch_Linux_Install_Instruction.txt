@@ -1,5 +1,5 @@
 ================================================================================
-                               [ Install Arch ]
+                               [ Install Arch with Grub Bootloader ]
 ================================================================================
 
 Part1) Partition
@@ -7,9 +7,11 @@ wipefs --all /dev/sd@
 gdisk /dev/sd@
 Number   Size   Code   Name
 1        2M     ef02   Bios boot partition
-2        [??]   8200   Linux swap
+2        [??]   8200   Linux swap            # memory_size * 2
 3        512M   8300   Linux filesystem      # /boot
-4        [??]   8300   Linux filesystem      # /
+4        [??]   8300   Linux filesystem      # /root
+5        [??]   8300   Linux filesystem      # /home
+6        [??]   8300   Linux filesystem      # /
 
 lsblk /dev/sd@
 mkswap /dev/sd@2
@@ -19,9 +21,22 @@ mkfs.ext4 /dev/sd@4
 
 
 Part 2) Install Arch
-mount /dev/sd@4 /mnt
-mkdir -p /mnt/boot
+# mount root
+mount /dev/sd@6 /mnt
+
+# create boot, root, home directories
+mkdir -p /mnt/{boot,root,home}
+
+# mount boot directory
 mount /dev/sd@3 /mnt/boot
+
+# mount root directory
+mount /dev/sd@4 /mnt/root
+
+# mount home directory
+mount /dev/sd@5 /mnt/home
+
+# install arch
 pacman -Syy
 pacstrap -i /mnt base base-devel
 
@@ -50,24 +65,21 @@ vi /etc/hosts
     add "[machine name]" to end of lines
 ------------------------------------------
 
+
+Part 4) Network config
 ip link
------------------------------------------------------------
+
 # wire connection
 systemctl enable dhcpcd@[name].service
------------------------------------------------------------
+
 # wifi connection
-pacman -Syyu
+pacman -Syu
 pacman -S iw wpa_supplicant dialog wpa_actiond
 systemctl enable netctl-auto@[name].service
------------------------------------------------------------
 
 
-Part 4) Bootloader
-(1) from git
-curl https://raw.githubusercontent.com/mischievousjayden/JArch/master/instruction/script/grub_install.sh | sh /dev/stdin /dev/sd@
-
-(2) from scratch
-pacman -Syy
+Part 5) Bootloader
+pacman -Syu
 pacman -S grub-bios
 grub-install /dev/sd@
 mkinitcpio -p linux

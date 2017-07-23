@@ -20,21 +20,66 @@ makepkg -si
 cd ..
 
 
-Tip) Install Gnome
-(1) from git
-curl https://raw.githubusercontent.com/mischievousjayden/JArch/master/tip/script/gnome_install.sh | sh
+Tip) Install SSH
+# install ssh
+pacman -Syu openssh
 
-(2) from scratch
-pacman -Syu xorg
-pacman -S xterm xorg-xclock xorg-twm xorg-xinit xorg-server-utils
-pacman -S gnome gnome-extra gnome-tweak-tool
-systemctl enable gdm
+# ssh server setting
+systemctl start sshd.service # 'systemctl stop sshd.service' when want to stop
+systemctl enable sshd.service # automatically start at the boot time
+------------------------------------------
+# when need to log in with root
+vi /etc/ssh/sshd_config
+    add 'PermitRootLogin yes'
+------------------------------------------
+
+# x11 forwarding
+pacman xorg-xauth xorg-xhost
+------------------------------------------
+vi /etc/ssh/sshd_config
+    unblock and set 'AllowTcpForwarding yes'
+    unblock and set 'X11Forwarding yes'
+    unblock and set 'X11DisplayOffset 10'
+    unblock and set 'X11UseLocalHost yes'
+------------------------------------------
+systemctl restart sshd.service
+
+
+Tip) disable suspend on lid close
+vim /etc/systemd/logind.conf
+    HandleLidSwitch=ignore
+systemctl restart systemd-logind
+
+
+Tip) Install Gnome
+# Install Gnome
+pacman -Syu
+pacman -S xorg
+pacman -S xterm xorg-xclock xorg-twm xorg-xinit
+pacman -S gnome gnome-tweak-tool
+systemctl enable gdm.service
 localectl set-locale LANG="en_US.UTF-8"
 
-------------------------------------------
-vi /etc/gdm/custom.conf
-    unblock "WaylandEnable=false"
-------------------------------------------
+# Wifi for Gnome
+# reference
+# 
+#
+pacman -S wpa_supplicant wireless_tools networkmanager network-manager-applet gnome-keyring
+
+systemctl enable NetworkManager.service
+systemctl disable dhcpcd.service
+systemctl disable dhcpcd@.service
+systemctl stop dhcpcd.service
+systemctl stop dhcpcd@.service
+systemctl enable wpa_supplicant.service
+gpasswd -a <USERNAME> network
+
+ip link
+ip link set down eth0
+ip link set down wlan0
+
+systemctl start wpa_supplicant.service
+systemctl start NetworkManager.service
 
 
 Tip) Korean
@@ -58,21 +103,4 @@ vmhgfs-fuse -o allow_other -o auto_unmount .host:/<host shared folder> <mound de
 vim /etc/fuse.conf
 # add following end of file
     user_allow_other
-
-
-Tip) Install OpenSSH
-pacman -Syu openssh
-systemctl start sshd.service # 'systemctl stop sshd.service' when want to stop
-systemctl enable sshd.service # automatically start at the boot time
-------------------------------------------
-# when need to log in with root
-vi /etc/ssh/sshd_config
-    add 'PermitRootLogin yes'
-------------------------------------------
-
-
-Tip) disable suspend on lid close
-vim /etc/systemd/logind.conf
-    HandleLidSwitch=ignore
-systemctl restart systemd-logind
 
