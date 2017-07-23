@@ -62,8 +62,8 @@ localectl set-locale LANG="en_US.UTF-8"
 
 # Wifi for Gnome
 # reference
-# 
-#
+# https://evilshit.wordpress.com/2012/09/15/how-to-make-networkmanager-and-network-manager-applet-work-on-arch-linux-with-gnome3/
+# https://unix.stackexchange.com/questions/292195/install-network-manager-applet-tray-icon-on-arch-linux-gnome-3-20
 pacman -S wpa_supplicant wireless_tools networkmanager network-manager-applet gnome-keyring
 
 systemctl enable NetworkManager.service
