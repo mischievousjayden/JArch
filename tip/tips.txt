@@ -88,8 +88,9 @@ ibus-setup
 
 
 Tip) VMWare Tools
-pacman -Syu net-tools gtkmm
+pacman -S net-tools gtkmm
 pacman -S open-vm-tools
+pacman -S xf86-video-vmware xf86-input-vmmouse
 
 
 Tip) VMWare Tools with Host Shared Folder
