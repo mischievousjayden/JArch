@@ -155,6 +155,9 @@ vi /boot/loader/loader.conf
     timeout 4
     editor 0
 ------------------------------------------
+
+# linux and initrd point files under /boot/
+# For linux (not lts)
 ------------------------------------------
 vi /boot/loader/entries/arch.conf
     title Archlinux
@@ -162,6 +165,15 @@ vi /boot/loader/entries/arch.conf
     initrd /initramfs-linux.img
     options root=PARTUUID=<partuuid of /dev/sd@5 to mount root> rw
 ------------------------------------------
+# For linux-lts
+------------------------------------------
+vi /boot/loader/entries/arch.conf
+    title Archlinux
+    linux /vmlinuz-linux-lts
+    initrd /initramfs-linux-lts.img
+    options root=PARTUUID=<partuuid of /dev/sd@5 to mount root> rw
+------------------------------------------
+
 
 
 exit
@@ -189,10 +201,37 @@ vi pacman.conf
     SigLevel = Optional TrustAll
     Server = http://archzfs.com/$repo/x86_64
 ------------------------------------------
+# for linux (not lts)
 ------------------------------------------
 vi packages.x86_64
 # add following end of file
     archzfs-linux
+------------------------------------------
+# for linux-lts
+------------------------------------------
+vi packages.x86_64
+# add following end of file
+    archzfs-linux-lts
+------------------------------------------
+
+Kernel Mismatch)
+# reference
+# https://ramsdenj.com/2016/06/23/arch-linux-on-zfs-part-1-embed-zfs-in-archiso.html
+
+mkdir -p /root/{customrepo/x86_64,pkg}
+# for linux (not lts)
+wget "https://archive.archlinux.org/packages/l/linux/linux-${version}-x86_64.pkg.tar.xz" -P /root/pkg
+# for linux-lts
+wget "https://archive.archlinux.org/packages/l/linux-lts/linux-lts-${version}-x86_64.pkg.tar.xz" -P /root/pkg
+
+repo-add /root/customrepo/x86_64/customrepo.db.tar.gz /root/pkg/linux-${version}-x86_64.pkg.tar.xz
+
+------------------------------------------
+vi pacman.conf
+# add following end of file
+    [customrepo]
+    SigLevel = Optional TrustAll
+    Server = file:///root/customrepo/$arch
 ------------------------------------------
 
 
