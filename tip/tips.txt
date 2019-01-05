@@ -9,6 +9,17 @@ visudo
 
 
 Tip) Install Yaourt
+[ from a custom repository ]
+------------------------------------------
+vim /etc/pacman.conf
+add on the bottom:
+    [archlinuxfr]
+    SigLevel = Never
+    Server = http://repo.archlinux.fr/$arch
+sudo pacman -Sy yaourt
+------------------------------------------
+
+[ from AUR ]
 < https://archlinux.fr/yaourt-en >
 git clone https://aur.archlinux.org/package-query.git
 cd package-query
@@ -25,8 +36,14 @@ Tip) Install SSH
 pacman -Syu openssh
 
 # ssh server setting
-systemctl start sshd.service # 'systemctl stop sshd.service' when want to stop
+(SSH daemon permanently active)
+systemctl start sshd.service # start ssh
 systemctl enable sshd.service # automatically start at the boot time
+
+(recommended way)
+systemctl start sshd.socket # start ssh
+systemctl enable sshd.socket # automatically start at the boot time
+
 ------------------------------------------
 # when need to log in with root
 vi /etc/ssh/sshd_config
