@@ -58,6 +58,7 @@ Number   Size   Code   Name
     echo w   # save
 ) | fdisk /dev/sd@
 
+# Make swap & Format the partitions
 lsblk /dev/sd@
 mkswap /dev/sd@2
 swapon /dev/sd@2
@@ -89,10 +90,57 @@ pacstrap -i /mnt base base-devel
 
 
 Part 3) Config
+# Fstab
 genfstab -U -p /mnt >> /mnt/etc/fstab
+
+# chroot
 arch-chroot /mnt /bin/bash
+
+# root password
 passwd
 
+# Time zone
+ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
+hwclock --systohc
+
+# Localization
+echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+locale-gen
+echo "LANG=en_US.UTF-8" >> /etc/locale.conf
+
+# Network configuration
+echo "[machine name]" > /etc/hostname
+    or hostnamectl set-hostname "[machine name]"
+------------------------------------------
+vi /etc/hosts
+#<ip-address>   <hostname.domain.org>   <hostname>
+127.0.0.1       localhost.localdomain   localhost [machine name]
+::1             localhost.localdomain   localhost [machine name]
+------------------------------------------
+ip link # check interface name
+systemctl enable dhcpcd@[interface].service # wire connection
+
+# wireless setting (optional)
+pacman -Sy dialog wpa_supplicant # netctl dependency for wifi-menu comman
+pacman -Sy wpa_actiond # for systemctl 
+systemctl enable netctl-auto@[interface].service # netctl profiles will be started automatically
+
+# microcode (optional)
+for amd cpu, pacman -Sy amd-ucode
+for intel cpu, pacman -Sy intel-ucode
+
+# Bootloader
+pacman -Sy grub-bios
+grub-install --target=i386-pc /dev/sd@ # install grub
+grub-mkconfig -o /boot/grub/grub.cfg # create grub config
+
+# reboot
+exit
+umount -R /mnt
+reboot
+
+
+[ old instruction ]
 (1) from git
 curl https://raw.githubusercontent.com/mischievousjayden/JArch/master/instruction/script/arch_config.sh | sh /dev/stdin 'machinename'
 
@@ -122,7 +170,7 @@ systemctl enable dhcpcd@[name].service
 # wifi connection
 pacman -Syu
 pacman -S iw wpa_supplicant dialog wpa_actiond
-systemctl enable netctl-auto@[name].service
+systemctl enable netctl-auto@[interface].service
 
 
 Part 5) Bootloader
@@ -143,6 +191,7 @@ reboot
 ================================================================================
 
 Part1) Partition
+# use gdisk
 wipefs --all /dev/sd@
 gdisk /dev/sd@
 Number   Size   Code   Name
@@ -152,6 +201,39 @@ Number   Size   Code   Name
 4        [??]   8300   Linux filesystem      # /home
 5        [??]   8300   Linux filesystem      # /
 
+# use fdisk on command line
+(
+    echo g     # create a new empty GTP partition table
+    echo n     # start to create swap partition
+    echo       # select default partition number
+    echo       # select first sector for swap partition
+    echo +??   # select last sector for swap partition
+    echo t     # change a partition type
+    echo 18    # linux swap
+    echo n     # start to create EFI system partition for /boot
+    echo       # select default partition number
+    echo       # select first sector
+    echo +512M # select last sector
+    echo t     # change a partition type to
+    echo 2     # select partition 2
+    echo 1     # EFI System
+    echo n     # start to create partition for /root
+    echo       # select default partition number
+    echo       # select first sector
+    echo +??   # select last sector
+    echo n     # start to create partition for /home
+    echo       # select default partition number
+    echo       # select first sector
+    echo +??   # select last sector
+    echo n     # start to create partition for /
+    echo       # select default partition number
+    echo       # select first sector
+    echo       # select last sector
+    echo w     # save
+) | fdisk /dev/sd@
+
+
+# Make swap & Format the partitions
 lsblk /dev/sd@
 mkswap /dev/sd@1
 swapon /dev/sd@1
