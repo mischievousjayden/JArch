@@ -1,8 +1,22 @@
 ================================================================================
+                             [ Pre-installation ]
+================================================================================
+
+[ Connect to the Internet ]
+wifi-menu
+
+[ Partition the disks ]
+- wipefs --all /dev/sd@ # wipe file system
+- BIOS: go to "Partition" at "Install Arch with Grub Bootloader" 
+- UEFI: go to "Partition" at "Install Arch on UEFI"
+
+
+================================================================================
                          [ Install Arch with Grub Bootloader ]
 ================================================================================
 
 Part1) Partition
+# Use gdisk
 wipefs --all /dev/sd@
 gdisk /dev/sd@
 Number   Size   Code   Name
@@ -12,6 +26,37 @@ Number   Size   Code   Name
 4        [??]   8300   Linux filesystem      # /root
 5        [??]   8300   Linux filesystem      # /home
 6        [??]   8300   Linux filesystem      # /
+
+# use fdisk on command line
+(
+    echo g   # create a new empty GTP partition table
+    echo n   # start to create boot partition
+    echo     # select default partition number
+    echo     # select first sector for boot partition
+    echo +2M # select last sector for boot partition
+    echo t   # change a partition type to
+    echo 4   # BIOS boot
+    echo n   # start to create swap partition
+    echo     # select default partition number
+    echo     # select first sector for swap partition
+    echo +?? # select last sector for swap partition
+    echo t   # change a partition type
+    echo 2   # select partition 2
+    echo 18  # linux swap
+    echo n   # start to create partition for /root
+    echo     # select default partition number
+    echo     # select first sector
+    echo +?? # select last sector
+    echo n   # start to create partition for /home
+    echo     # select default partition number
+    echo     # select first sector
+    echo +?? # select last sector
+    echo n   # start to create partition for /
+    echo     # select default partition number
+    echo     # select first sector
+    echo     # select last sector
+    echo w   # save
+) | fdisk /dev/sd@
 
 lsblk /dev/sd@
 mkswap /dev/sd@2
