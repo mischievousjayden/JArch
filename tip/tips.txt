@@ -31,6 +31,23 @@ makepkg -si
 cd ..
 
 
+Tip) Fan Control for laptop
+pacman -S lm_sensors
+# check chipset
+sensors
+# If the output does not display an RPM value for the CPU fan,
+# one may need to increase the fan divisor. 
+---------------------------------
+vi /etc/sensors.d/fan-speed-control.conf
+    chip "coretemp-isa-*"
+    set fanX_dif 4
+---------------------------------
+# Replacing coretemp-isa- with name of the chipset 
+# and X with the number of the CPU fan to change. 
+sensors -s
+# if it prints out error message, please read the page:
+# https://wiki.archlinux.org/index.php/fan_speed_control
+
 Tip) Install SSH
 # install ssh
 pacman -Syu openssh
