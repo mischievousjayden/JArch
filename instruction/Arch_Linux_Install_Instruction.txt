@@ -110,7 +110,6 @@ echo "LANG=en_US.UTF-8" >> /etc/locale.conf
 
 # Network configuration
 echo "[machine name]" > /etc/hostname
-    or hostnamectl set-hostname "[machine name]"
 ------------------------------------------
 vi /etc/hosts
 #<ip-address>   <hostname.domain.org>   <hostname>
