@@ -2,6 +2,10 @@
                              [ Pre-installation ]
 ================================================================================
 
+[ USB ]
+wipefs --all /dev/sd@
+dd if=[iso] of=/dev/sd@ bs=4M status=progress && sync
+
 [ Connect to the Internet ]
 wifi-menu
 
@@ -21,68 +25,72 @@ wipefs --all /dev/sd@
 gdisk /dev/sd@
 Number   Size   Code   Name
 1        2M     ef02   Bios boot partition
-2        [??]   8200   Linux swap
-3        512M   8300   Linux filesystem      # /boot
-4        [??]   8300   Linux filesystem      # /root
-5        [??]   8300   Linux filesystem      # /home
-6        [??]   8300   Linux filesystem      # /
+2        512M   8300   Linux filesystem      # /boot
+3        [??]   8300   Linux filesystem      # /root
+4        [??]   8300   Linux filesystem      # /home
+5        [??]   8300   Linux filesystem      # /
+6        [??]   8200   Linux swap
 
 # use fdisk on command line
 (
-    echo g   # create a new empty GTP partition table
-    echo n   # start to create boot partition
-    echo     # select default partition number
-    echo     # select first sector for boot partition
-    echo +2M # select last sector for boot partition
-    echo t   # change a partition type to
-    echo 4   # BIOS boot
+    echo g     # create a new empty GTP partition table
+    echo n     # start to create boot partition
+    echo       # select default partition number
+    echo       # select first sector for boot partition
+    echo +2M   # select last sector for boot partition
+    echo t     # change a partition type to
+    echo 4     # BIOS boot
+    echo n     # start to create partition for /boot
+    echo       # select default partition number
+    echo       # select first sector
+    echo +512M # select last sector
+    echo n     # start to create partition for /root
+    echo       # select default partition number
+    echo       # select first sector
+    echo +??   # select last sector
+    echo n     # start to create partition for /home
+    echo       # select default partition number
+    echo       # select first sector
+    echo +??   # select last sector
+    echo n     # start to create partition for /
+    echo       # select default partition number
+    echo       # select first sector
+    echo -??   # select last sector left for swap partition
     echo n   # start to create swap partition
     echo     # select default partition number
     echo     # select first sector for swap partition
-    echo +?? # select last sector for swap partition
+    echo     # select last sector for swap partition
     echo t   # change a partition type
-    echo 2   # select partition 2
-    echo 18  # linux swap
-    echo n   # start to create partition for /root
-    echo     # select default partition number
-    echo     # select first sector
-    echo +?? # select last sector
-    echo n   # start to create partition for /home
-    echo     # select default partition number
-    echo     # select first sector
-    echo +?? # select last sector
-    echo n   # start to create partition for /
-    echo     # select default partition number
-    echo     # select first sector
-    echo     # select last sector
+    echo 6   # select partition 2
+    echo 19  # linux swap
     echo w   # save
 ) | fdisk /dev/sd@
 
 # Make swap & Format the partitions
 lsblk /dev/sd@
-mkswap /dev/sd@2
-swapon /dev/sd@2
+mkswap /dev/sd@6
+swapon /dev/sd@6
+mkfs.ext4 /dev/sd@2
 mkfs.ext4 /dev/sd@3
 mkfs.ext4 /dev/sd@4
 mkfs.ext4 /dev/sd@5
-mkfs.ext4 /dev/sd@6
 
 
 Part 2) Install Arch
 # mount root
-mount /dev/sd@6 /mnt
+mount /dev/sd@5 /mnt
 
 # create boot, root, home directories
 mkdir -p /mnt/{boot,root,home}
 
 # mount boot directory
-mount /dev/sd@3 /mnt/boot
+mount /dev/sd@2 /mnt/boot
 
 # mount root directory
-mount /dev/sd@4 /mnt/root
+mount /dev/sd@3 /mnt/root
 
 # mount home directory
-mount /dev/sd@5 /mnt/home
+mount /dev/sd@4 /mnt/home
 
 # install arch
 pacman -Syy
@@ -194,27 +202,20 @@ Part1) Partition
 wipefs --all /dev/sd@
 gdisk /dev/sd@
 Number   Size   Code   Name
-1        [??]   8200   Linux swap
-2        512M   ef00   EFI System            # /boot
-3        [??]   8300   Linux filesystem      # /root
-4        [??]   8300   Linux filesystem      # /home
-5        [??]   8300   Linux filesystem      # /
+1        512M   ef00   EFI System            # /boot
+2        [??]   8300   Linux filesystem      # /root
+3        [??]   8300   Linux filesystem      # /home
+4        [??]   8300   Linux filesystem      # /
+5        [??]   8200   Linux swap
 
 # use fdisk on command line
 (
     echo g     # create a new empty GTP partition table
-    echo n     # start to create swap partition
-    echo       # select default partition number
-    echo       # select first sector for swap partition
-    echo +??   # select last sector for swap partition
-    echo t     # change a partition type
-    echo 18    # linux swap
     echo n     # start to create EFI system partition for /boot
     echo       # select default partition number
     echo       # select first sector
     echo +512M # select last sector
     echo t     # change a partition type to
-    echo 2     # select partition 2
     echo 1     # EFI System
     echo n     # start to create partition for /root
     echo       # select default partition number
@@ -227,19 +228,26 @@ Number   Size   Code   Name
     echo n     # start to create partition for /
     echo       # select default partition number
     echo       # select first sector
-    echo       # select last sector
+    echo -??   # select last sector left for swap partition
+    echo n     # start to create swap partition
+    echo       # select default partition number
+    echo       # select first sector for swap partition
+    echo +??   # select last sector for swap partition
+    echo t     # change a partition type
+    echo 5     # select partition 5
+    echo 19    # linux swap
     echo w     # save
 ) | fdisk /dev/sd@
 
 
 # Make swap & Format the partitions
 lsblk /dev/sd@
-mkswap /dev/sd@1
-swapon /dev/sd@1
-mkfs.fat /dev/sd@2
+mkswap /dev/sd@5
+swapon /dev/sd@5
+mkfs.fat /dev/sd@1
+mkfs.ext4 /dev/sd@2
 mkfs.ext4 /dev/sd@3
 mkfs.ext4 /dev/sd@4
-mkfs.ext4 /dev/sd@5
 
 
 Part 2) Install Arch
@@ -250,13 +258,13 @@ mount /dev/sd@5 /mnt
 mkdir -p /mnt/{boot,root,home}
 
 # mount boot directory
-mount /dev/sd@2 /mnt/boot
+mount /dev/sd@1 /mnt/boot
 
 # mount root directory
-mount /dev/sd@3 /mnt/root
+mount /dev/sd@2 /mnt/root
 
 # mount home directory
-mount /dev/sd@4 /mnt/home
+mount /dev/sd@3 /mnt/home
 
 # install arch
 pacman -Syy
