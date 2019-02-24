@@ -237,7 +237,7 @@ mount /dev/sd@2 /mnt/home
 pacman -Syy
 pacstrap -i /mnt base base-devel
 
-# hook block and  keyboard before autodetect
+# hook block and keyboard before autodetect
 vi /mnt/etc/mkinitcpio.conf
     From
         HOOKS="base udev autodetect modconf block filesystems keyboard fsck"
