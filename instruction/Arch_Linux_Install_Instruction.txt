@@ -54,7 +54,7 @@ Number   Size   Code   Name
     echo n     # start to create swap partition
     echo       # select default partition number
     echo       # select first sector for swap partition
-    echo +??   # select last sector for swap partition
+    echo       # select last sector for swap partition
     echo t     # change a partition type
     echo 5     # select partition 5
     echo 19    # linux swap
@@ -126,7 +126,7 @@ vi /etc/hosts
 ------------------------------------------
 ip link # check interface name
 
-< netctl >
+< netctl > - recommended for server
     systemctl enable dhcpcd@[interface].service # wire connection
 
     # wireless setting (optional)
@@ -134,11 +134,11 @@ ip link # check interface name
     pacman -S wpa_actiond # for systemctl 
     systemctl enable netctl-auto@[interface].service # netctl profiles will be started automatically
 
-< NetworkManager >
+< NetworkManager > - recommended for desktop
     pacman -S networkmanager
     systemctl enable NetworkManager.service
 
-Part 5) Bootloader 
+Part 5) Bootloader
 < grub >
     pacman -S grub efibootmgr
     grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB # install grub
@@ -178,6 +178,93 @@ Part 6) reboot
 exit
 umount -R /mnt
 reboot
+
+
+================================================================================
+                             [ Install Arch USB Key ]
+================================================================================
+
+Part 1) Partition - no swap partition!
+# use gdisk
+wipefs --all /dev/sd@
+gdisk /dev/sd@
+Number   Size   Code   Name
+1        512M   ef00   EFI System            # /boot
+2        [??]   8300   Linux filesystem      # /home
+3        [??]   8300   Linux filesystem      # /
+
+# use fdisk on command line
+(
+    echo g     # create a new empty GTP partition table
+    echo n     # start to create EFI system partition for /boot
+    echo       # select default partition number
+    echo       # select first sector
+    echo +512M # select last sector
+    echo t     # change a partition type to
+    echo 1     # EFI System
+    echo n     # start to create partition for /home
+    echo       # select default partition number
+    echo       # select first sector
+    echo +??   # select last sector
+    echo n     # start to create partition for /
+    echo       # select default partition number
+    echo       # select first sector
+    echo       # select last sector
+    echo w     # save
+) | fdisk /dev/sd@
+
+# Make swap & Format the partitions
+lsblk /dev/sd@
+mkfs.fat /dev/sd@1
+mkfs.ext4 -O "^has_journal" /dev/sd@2
+mkfs.ext4 -O "^has_journal" /dev/sd@3
+
+
+Part 2) Install Arch
+# mount root
+mount /dev/sd@3 /mnt
+
+# create boot, home directories
+mkdir -p /mnt/{boot,home}
+
+# mount boot directory
+mount /dev/sd@1 /mnt/boot
+
+# mount home directory
+mount /dev/sd@2 /mnt/home
+
+# install arch
+pacman -Syy
+pacstrap -i /mnt base base-devel
+
+# hook block and  keyboard before autodetect
+vi /mnt/etc/mkinitcpio.conf
+    From
+        HOOKS="base udev autodetect modconf block filesystems keyboard fsck"
+    To
+        HOOKS="base udev block keyboard autodetect modconf filesystems fsck"
+
+
+Part 3) Config
+# follow Part 3 in [ Install Arch on UEFI ]
+
+# using usb key on multiple machine
+pacman -S xf86-input-synaptics xf86-video-vesa xf86-video-ati xf86-video-intel xf86-video-amdgpu xf86-video-nouveau
+
+
+Part 4) Network config
+# follow Part 4 in [ Install Arch on UEFI ]
+
+
+Part 5) Bootloader
+# grub
+pacman -S grub efibootmgr
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB --removable --recheck # install grub
+grub-mkconfig -o /boot/grub/grub.cfg # create grub config
+
+
+Part 6) reboot
+# follow Part 6 in [ Install Arch on UEFI ]
 
 
 ================================================================================
