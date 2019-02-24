@@ -2,6 +2,8 @@ Tip) Create group and user
 groupadd mygroup # create group 'mygroup'
 useradd -m -s /bin/bash -g mygroup myid # create user 'myid' in group 'mygroup', default shell is bash
 passwd myid # change password
+
+# give sudo (change /etc/sudoers)
 ------------------------------------------
 visudo
     add "myid ALL=(ALL) ALL"
@@ -87,12 +89,11 @@ systemctl restart systemd-logind
 
 Tip) Install Gnome
 # Install Gnome
-pacman -Syu
-pacman -S xorg
-pacman -S xterm xorg-xclock xorg-twm xorg-xinit
-pacman -S gnome gnome-tweak-tool
+pacman -S xorg-server xorg-xinit gnome gnome-extra
 systemctl enable gdm.service
 localectl set-locale LANG="en_US.UTF-8"
+
+# if gnome terminal doesn't open, set langauge under Settings > Region & Language
 
 # Wifi for Gnome
 # reference
