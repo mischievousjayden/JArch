@@ -91,6 +91,8 @@ Tip) Install Gnome
 # Install Gnome
 pacman -S xorg-server xorg-xinit gnome gnome-extra
 systemctl enable gdm.service
+
+# if have probelm try following old way)
 localectl set-locale LANG="en_US.UTF-8"
 
 # if gnome terminal doesn't open, set langauge under Settings > Region & Language
