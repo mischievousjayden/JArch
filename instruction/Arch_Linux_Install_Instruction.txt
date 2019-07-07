@@ -70,8 +70,6 @@ mkfs.ext4 /dev/sd@2
 mkfs.ext4 /dev/sd@3
 mkfs.ext4 /dev/sd@4
 
-
-Part 2) Install Arch
 # mount root
 mount /dev/sd@4 /mnt
 
@@ -87,6 +85,8 @@ mount /dev/sd@2 /mnt/root
 # mount home directory
 mount /dev/sd@3 /mnt/home
 
+
+Part 2) Install Arch
 # install arch
 pacman -Syy
 pacstrap -i /mnt base base-devel
@@ -104,7 +104,7 @@ passwd
 
 # Time zone
 ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
-hwclock --systohc
+hwclock --systohc --utc
 
 # Localization
 echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
@@ -131,7 +131,6 @@ ip link # check interface name
 
     # wireless setting (optional)
     pacman -S dialog wpa_supplicant # netctl dependency for wifi-menu comman
-    pacman -S wpa_actiond # for systemctl 
     systemctl enable netctl-auto@[interface].service # netctl profiles will be started automatically
 
 < NetworkManager > - recommended for desktop
@@ -219,8 +218,6 @@ mkfs.fat /dev/sd@1
 mkfs.ext4 -O "^has_journal" /dev/sd@2
 mkfs.ext4 -O "^has_journal" /dev/sd@3
 
-
-Part 2) Install Arch
 # mount root
 mount /dev/sd@3 /mnt
 
@@ -233,9 +230,9 @@ mount /dev/sd@1 /mnt/boot
 # mount home directory
 mount /dev/sd@2 /mnt/home
 
-# install arch
-pacman -Syy
-pacstrap -i /mnt base base-devel
+
+Part 2) Install Arch
+# follow Part 2 in [ Install Arch on UEFI ]
 
 # hook block and keyboard before autodetect
 vi /mnt/etc/mkinitcpio.conf
@@ -327,8 +324,6 @@ mkfs.ext4 /dev/sd@3
 mkfs.ext4 /dev/sd@4
 mkfs.ext4 /dev/sd@5
 
-
-Part 2) Install Arch
 # mount root
 mount /dev/sd@5 /mnt
 
@@ -344,105 +339,28 @@ mount /dev/sd@3 /mnt/root
 # mount home directory
 mount /dev/sd@4 /mnt/home
 
-# install arch
-pacman -Syy
-pacstrap -i /mnt base base-devel
+
+Part 2) Install Arch
+# follow Part 2 in [ Install Arch on UEFI ]
 
 
 Part 3) Config
-# Fstab
-genfstab -U -p /mnt >> /mnt/etc/fstab
-
-# chroot
-arch-chroot /mnt /bin/bash
-
-# root password
-passwd
-
-# Time zone
-ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
-hwclock --systohc
-
-# Localization
-echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
-locale-gen
-echo "LANG=en_US.UTF-8" >> /etc/locale.conf
-
-# Network configuration
-echo "[machine name]" > /etc/hostname
-------------------------------------------
-vi /etc/hosts
-#<ip-address>   <hostname.domain.org>   <hostname>
-127.0.0.1       localhost.localdomain   localhost [machine name]
-::1             localhost.localdomain   localhost [machine name]
-------------------------------------------
-ip link # check interface name
-systemctl enable dhcpcd@[interface].service # wire connection
-
-# wireless setting (optional)
-pacman -Sy dialog wpa_supplicant # netctl dependency for wifi-menu comman
-pacman -Sy wpa_actiond # for systemctl 
-systemctl enable netctl-auto@[interface].service # netctl profiles will be started automatically
-
-# microcode (optional)
-for amd cpu, pacman -Sy amd-ucode
-for intel cpu, pacman -Sy intel-ucode
-
-# Bootloader
-pacman -Sy grub-bios
-grub-install --target=i386-pc /dev/sd@ # install grub
-grub-mkconfig -o /boot/grub/grub.cfg # create grub config
-
-# reboot
-exit
-umount -R /mnt
-reboot
-
-
-[ old instruction ]
-(1) from git
-curl https://raw.githubusercontent.com/mischievousjayden/JArch/master/instruction/script/arch_config.sh | sh /dev/stdin 'machinename'
-
-(2) from scratch
-------------------------------------------
-vi /etc/locale.gen
-    unblock "en_US.UTF-8 UTF-8"
-------------------------------------------
-locale-gen
-export LANG=en_US.UTF-8
-ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
-hwclock --systohc --utc
-
-echo '[machine name]' > /etc/hostname
-------------------------------------------
-vi /etc/hosts
-    add "[machine name]" to end of lines
-------------------------------------------
+# follow Part 3 in [ Install Arch on UEFI ]
 
 
 Part 4) Network config
-ip link
-
-# wire connection
-systemctl enable dhcpcd@[name].service
-
-# wifi connection
-pacman -Syu
-pacman -S iw wpa_supplicant dialog wpa_actiond
-systemctl enable netctl-auto@[interface].service
+# follow Part 4 in [ Install Arch on UEFI ]
 
 
 Part 5) Bootloader
-pacman -Syu
-pacman -S grub-bios
-grub-install /dev/sd@
-mkinitcpio -p linux
-grub-mkconfig -o /boot/grub/grub.cfg
+pacman -Sy grub-bios
+grub-install --target=i386-pc /dev/sd@ # install grub
+# mkinitcpio -p linux
+grub-mkconfig -o /boot/grub/grub.cfg # create grub config
 
 
-exit
-reboot
-
+Part 6) reboot
+# follow Part 6 in [ Install Arch on UEFI ]
 
 
 ================================================================================
