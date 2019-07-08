@@ -119,6 +119,13 @@ systemctl start wpa_supplicant.service
 systemctl start NetworkManager.service
 
 
+Tip) Useful gnome shell extensions
+pacman -S chrome-gnome-shell
+- dash to dock
+- topicons plus
+- sound input & output device chooser
+
+
 Tip) Korean
 pacman -Sy ibus ibus-hangul adobe-source-han-sans-kr-fonts
 ibus-setup
