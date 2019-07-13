@@ -11,16 +11,6 @@ visudo
 
 
 Tip) Install Yaourt
-[ from a custom repository ]
-------------------------------------------
-vim /etc/pacman.conf
-add on the bottom:
-    [archlinuxfr]
-    SigLevel = Never
-    Server = http://repo.archlinux.fr/$arch
-sudo pacman -Sy yaourt
-------------------------------------------
-
 [ from AUR ]
 < https://archlinux.fr/yaourt-en >
 git clone https://aur.archlinux.org/package-query.git
@@ -85,6 +75,10 @@ Tip) disable suspend on lid close
 vim /etc/systemd/logind.conf
     HandleLidSwitch=ignore
 systemctl restart systemd-logind
+
+
+Tip) Install Retroarch
+pacman -S libxinerama libxrandr retroarch
 
 
 Tip) Install Gnome
