@@ -78,7 +78,29 @@ systemctl restart systemd-logind
 
 
 Tip) Install Retroarch
-pacman -S libxinerama libxrandr retroarch
+pacman -S retroarch libxinerama libxrandr zip
+pacman -S libretro-overlays libretro-shaders-slang retroarch-assets-ozone retroarch-assets-xmb
+
+------------------------------------------
+for i686 system:
+# update architecture in pacman.conf
+vim /etc/pacman.conf
+    Architecture = i686
+
+# update retroarch.cfg
+vim /etc/retroarch.cfg or vim ~/.config/retroarch/retroarch.cfg
+    menu_shader_pipeline = "0"
+    menu_show_core_updater = "true"
+
+
+Tip) Sound
+pacman -S alsa-utils
+alsamixer
+
+
+Tip) Monitor Brightness
+cat /sys/class/backlight/acpi_video0/max_brightness
+echo 5 > /sys/class/backlight/acpi_video0/brightness
 
 
 Tip) Install Gnome
