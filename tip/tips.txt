@@ -86,6 +86,10 @@ Tip) Install Gnome
 pacman -S xorg-server xorg-xinit gnome gnome-extra
 systemctl enable gdm.service
 
+# Install Font (reference https://www.youtube.com/watch?v=jW4GFGOIUjc)
+pacman -S adobe-source-sans-pro-fonts aspell-en gst-libav icedtea-web jre8-openjdk languagetool libmythes mythes-en pkgstats ttf-anonymous-pro ttf-bitstream-vera ttf-dejavu ttf-droid ttf-gentium ttf-liberation ttf-ubuntu-font-family
+
+
 # if have probelm try following old way)
 localectl set-locale LANG="en_US.UTF-8"
 
