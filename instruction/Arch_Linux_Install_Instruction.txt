@@ -105,6 +105,10 @@ passwd
 # Time zone
 ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
 hwclock --systohc --utc
+# if hwclock is wrong
+timedatectl set-ntp true
+# check with 
+date
 
 # Localization
 echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
