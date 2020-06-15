@@ -89,7 +89,7 @@ mount /dev/sd@3 /mnt/home
 Part 2) Install Arch
 # install arch
 pacman -Syy
-pacstrap -i /mnt base base-devel
+pacstrap -i /mnt base base-devel linux linux-firmware
 
 
 Part 3) Config
