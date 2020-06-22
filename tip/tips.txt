@@ -92,6 +92,16 @@ vim /etc/retroarch.cfg or vim ~/.config/retroarch/retroarch.cfg
     menu_shader_pipeline = "0"
     menu_show_core_updater = "true"
 
+# change config on lakka os
+1. Boot with CAPS LOCK or CTRL-ALT-F3 on (this enables the SYSLINUX prompt)
+2. At the prompt:
+    boot: linux tty
+3. Wait for boot and then CTRL-ALT-F3
+4. systemctl stop retroarch
+5. vim /storage/.config/retroarch/retroarch.cfg
+    menu_shader_pipeline = "0"
+6. systemctl start retroarch
+
 
 Tip) Sound
 pacman -S alsa-utils
